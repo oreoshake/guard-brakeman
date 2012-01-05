@@ -44,9 +44,11 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def start
-      @tracker = Brakeman.run :app_path => path
+      @tracker = ::Brakeman.run :app_path => 'default_app'
+    end
 
-      run_all if @options[:all_on_start]
+    def tracker=tracker
+      @tracker = tracker
     end
 
     # Gets called when all specs should be run.
@@ -59,9 +61,10 @@ module Guard
       if passed
         @failed_paths = []
       else
+        @failed_paths = get_failed_paths(@tracker)
         # @failed_paths = @tracker.checks.all_warnings
-        puts @tracker.checks.all_warnings.inspect
-        puts @tracker.checks.errors.inspect
+        # puts @tracker.checks.all_warnings.inspect
+        # puts @tracker.checks.errors.inspect
       end
 
       @last_failed = !passed
@@ -90,8 +93,8 @@ module Guard
       passed  = Runner.run(paths, @tracker, paths.include?('ROOT DIRECTORY') ? options.merge({ :message => 'Checking all files' }) : options)
 
 
-        puts @tracker.checks.all_warnings.inspect
-        puts @tracker.checks.errors.inspect
+        # puts @tracker.checks.all_warnings.inspect
+        # puts @tracker.checks.errors.inspect
       # if passed
       #   # clean failed paths memory
       #   @failed_paths -= paths if @options[:keep_failed]
@@ -109,7 +112,7 @@ module Guard
 
     private
 
-    def read_failed_features
+    def get_failed_paths tracker
       # TODO
     end
   end

@@ -1,3 +1,5 @@
+require 'brakeman'
+
 module Guard
   class Brakeman
 
@@ -22,7 +24,7 @@ module Guard
           UI.info message, :reset => true
 
           # system(brakeman_command(paths, options))
-          changed = Brakeman.rescan tracker, paths
+          changed = ::Brakeman.rescan(tracker, paths)
           if changed
             tracker.run_checks
             changed
