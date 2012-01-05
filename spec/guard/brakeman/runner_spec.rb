@@ -30,7 +30,7 @@ describe Guard::Brakeman::Runner do
     end
 
     context 'with an :output option' do
-      it 'does not add the guard notification listener' do
+      it 'appends the output option' do
         runner.should_receive(:system).with(
             "bundle exec brakeman -o stuff ."
         )

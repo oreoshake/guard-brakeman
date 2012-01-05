@@ -1,6 +1,7 @@
 source :rubygems
 
 require 'rbconfig'
+require 'brakeman'
 
 if RbConfig::CONFIG['target_os'] =~ /darwin/i
   gem 'rb-fsevent', '>= 0.4.0'
@@ -14,6 +15,7 @@ end
 
 group :development, :test do
   gem 'rake'
+  gem 'guard-bundler'
   gem 'guard-rspec'
   gem 'rspec'
 end

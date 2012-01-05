@@ -1,4 +1,5 @@
 require 'rspec'
+require 'guard/brakeman'
 
 RSpec.configure do |config|
 
