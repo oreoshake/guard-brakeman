@@ -1,3 +1,5 @@
+require 'guard'
+
 module Guard::Brakeman
-  Version = "0.1"
+  VERSION = "0.1"
 end

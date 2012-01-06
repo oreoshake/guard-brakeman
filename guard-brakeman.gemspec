@@ -4,7 +4,7 @@ require 'guard/brakeman/version'
 
 Gem::Specification.new do |s|
   s.name        = 'guard-brakeman'
-  s.version     = Guard::BundlerVersion::VERSION
+  s.version     = Guard::Brakeman::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Neil Matatall']
   s.email       = ['neil@matatall.com']
