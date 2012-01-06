@@ -1,7 +1,6 @@
 source :rubygems
 
 require 'rbconfig'
-require 'brakeman'
 
 if RbConfig::CONFIG['target_os'] =~ /darwin/i
   gem 'rb-fsevent', '>= 0.4.0'
@@ -12,6 +11,7 @@ if RbConfig::CONFIG['target_os'] =~ /linux/i
   gem 'libnotify',  '~> 0.3.0'
 end
 
+gem 'brakeman'
 
 group :development, :test do
   gem 'rake'

@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ['neil@matatall.com']
   s.homepage    = 'http://rubygems.org/gems/guard-brakeman'
   s.summary     = 'Guard gem for Brakeman'
-  s.description = 'Guard::Brakeman automatically scan your Rails app for vulnerabilities'
+  s.description = 'Guard::Brakeman automatically scans your Rails app for vulnerabilities'
 
   s.rubyforge_project         = 'guard-brakeman'
 
@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec', '~> 0.3.1'
 
   s.files        = Dir.glob('{lib}/**/*') + %w[LICENSE README.md]
-  s.require_path = 'lib'
+  s.require_path = ['lib']
 
-  s.rdoc_options = ["--charset=UTF-8", "--main=README.rdoc", "--exclude='(lib|test|spec)|(Gem|Guard|Rake)file'"]
+  s.rdoc_options = ["--charset=UTF-8", "--main=README.md", "--exclude='(lib|test|spec)|(Gem|Guard|Rake)file'"]
 end
