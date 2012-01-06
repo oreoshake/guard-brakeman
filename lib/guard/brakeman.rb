@@ -1,5 +1,6 @@
 require 'guard'
 require 'guard/guard'
+require 'brakeman'
 
 module Guard
 
@@ -44,7 +45,7 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def start
-      @tracker = ::Brakeman.run :app_path => 'default_app'
+      @tracker = ::Brakeman.run :app_path => '.'
     end
 
     def tracker=tracker
@@ -57,6 +58,8 @@ module Guard
     #
     def run_all
       passed = Runner.run(['.'], @tracker, options.merge(options[:run_all] || { }).merge(:message => 'Running all features'))
+
+      puts passed
 
       if passed
         @failed_paths = []
@@ -88,24 +91,22 @@ module Guard
     def run_on_change(paths)
       paths += @failed_paths if @options[:keep_failed]
       paths   = Inspector.clean(paths)
-      # options = @options[:change_format] ? change_format(@options[:change_format]) : @options
       options = @options
       passed  = Runner.run(paths, @tracker, paths.include?('ROOT DIRECTORY') ? options.merge({ :message => 'Checking all files' }) : options)
 
 
-        # puts @tracker.checks.all_warnings.inspect
-        # puts @tracker.checks.errors.inspect
-      # if passed
-      #   # clean failed paths memory
-      #   @failed_paths -= paths if @options[:keep_failed]
-      #   # run all the specs if the changed specs failed, like autotest
-      #   run_all if @last_failed && @options[:all_after_pass]
-      # else
-      #   # remember failed paths for the next change
-      #   @failed_paths += read_failed_features if @options[:keep_failed]
-      #   # track whether the changed feature failed for the next change
-      #   @last_failed = true
-      # end
+        
+      if passed
+        # clean failed paths memory
+        @failed_paths -= paths if @options[:keep_failed]
+        # run all the specs if the changed specs failed, like autotest
+        run_all if @last_failed && @options[:all_after_pass]
+      else
+        # remember failed paths for the next change
+        @failed_paths += get_failed_paths if @options[:keep_failed]
+        # track whether the changed feature failed for the next change
+        @last_failed = true
+      end
 
       throw :task_has_failed unless passed
     end
@@ -113,7 +114,7 @@ module Guard
     private
 
     def get_failed_paths tracker
-      # TODO
+      tracker.map
     end
   end
 end
