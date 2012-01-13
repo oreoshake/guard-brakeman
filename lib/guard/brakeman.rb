@@ -16,26 +16,13 @@ module Guard
     #
     # @param [Array<Guard::Watcher>] watchers the watchers in the Guard block
     # @param [Hash] options the options for the Guard
-    # @option options [String] :cli any arbitrary Brakeman CLI arguments
-    # @option options [Array<String>] :rvm a list of rvm version to use for the test
     # @option options [Boolean] :notification show notifications
-    # @option options [Boolean] :all_after_pass run all features after changed features pass
-    # @option options [Boolean] :all_on_start run all the features at startup
-    # @option options [Boolean] :keep_failed Keep failed features until they pass
-    # @option options [Boolean] :run_all run override any option when running all specs
-    # @option options [Boolean] :format use a different brakeman format when running individual features
-    # @option options [Boolean] :output specify the output file
-    # @option options [Boolean] :disabled specify tests to skip (comma separated)"
+    # @option options [Boolean] :format use a different brakeman format when running individual features - not implemented
+    # @option options [Boolean] :output specify the output file - not implemented
+    # @option options [Array<String>] :disabled specify tests to skip (comma separated) - not implemented"
     #
     def initialize(watchers = [], options = { })
       super
-      @options = {
-          :all_after_pass => true,
-          :all_on_start   => true,
-          :keep_failed    => true,
-          :cli            => '--no-profile --color --format progress --strict'
-      }.update(options)
-
       @last_failed  = false
       @failed_paths = []
     end
@@ -46,6 +33,7 @@ module Guard
     #
     def start
       @tracker = ::Brakeman.run :app_path => '.'
+      print_failed @tracker
     end
 
     def tracker=tracker
@@ -57,17 +45,17 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def run_all
-      passed = Runner.run(['.'], @tracker, options.merge(options[:run_all] || { }).merge(:message => 'Running all features'))
+      puts 'running all'
+      @tracker = ::Brakeman.run :app_path => '.'
+      
+      passed = @tracker.checks.all_warnings.empty? && @tracker.checks.errors.empty?
 
-      puts passed
+      print_failed @tracker
 
       if passed
         @failed_paths = []
       else
         @failed_paths = get_failed_paths(@tracker)
-        # @failed_paths = @tracker.checks.all_warnings
-        # puts @tracker.checks.all_warnings.inspect
-        # puts @tracker.checks.errors.inspect
       end
 
       @last_failed = !passed
@@ -89,22 +77,15 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def run_on_change(paths)
-      paths += @failed_paths if @options[:keep_failed]
-      paths   = Inspector.clean(paths)
-      options = @options
-      passed  = Runner.run(paths, @tracker, paths.include?('ROOT DIRECTORY') ? options.merge({ :message => 'Checking all files' }) : options)
+      report = Runner.run(paths, @tracker, options)
+      passed = !report.all_warnings.any?
 
+      print_failed report
 
-        
       if passed
-        # clean failed paths memory
         @failed_paths -= paths if @options[:keep_failed]
-        # run all the specs if the changed specs failed, like autotest
-        run_all if @last_failed && @options[:all_after_pass]
       else
-        # remember failed paths for the next change
         @failed_paths += get_failed_paths if @options[:keep_failed]
-        # track whether the changed feature failed for the next change
         @last_failed = true
       end
 
@@ -114,7 +95,13 @@ module Guard
     private
 
     def get_failed_paths tracker
-      tracker.map
+    end
+
+    def print_failed tracker
+      checks = tracker.is_a?(::Brakeman::Tracker) ? tracker.checks.all_warnings : tracker.all_warnings
+      tracker.checks.all_warnings.each do |w|
+        puts w.format_message
+      end
     end
   end
 end
