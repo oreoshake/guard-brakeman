@@ -23,8 +23,7 @@ module Guard
           message = options[:message] || (paths == ['.'] ? 'Run brakeman on the whole project' : "Run brakeman checks #{ paths.join(' ') }")
           UI.info message, :reset => true
 
-          report = ::Brakeman.rescan(tracker, paths)
-          report.all_warnings.any?
+          ::Brakeman.rescan(tracker, paths)
         end
       end
     end

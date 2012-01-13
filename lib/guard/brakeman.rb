@@ -99,8 +99,8 @@ module Guard
 
     def print_failed tracker
       checks = tracker.is_a?(::Brakeman::Tracker) ? tracker.checks.all_warnings : tracker.all_warnings
-      tracker.checks.all_warnings.each do |w|
-        puts w.format_message
+      checks.each do |w|
+        puts w.to_row
       end
     end
   end
