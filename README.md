@@ -32,43 +32,20 @@ Guard::Brakeman can be adapted to all kind of projects and comes with a default 
 
 ```ruby
 guard 'brakeman' do
-  TODO
+  watch(%r{^app/.+\.(erb|haml|rhtml|rb)$})
+  watch(%r{^config/.+\.rb$})
+  watch(%r{^lib/.+\.rb$})
+  watch('Gemfile')
 end
 ```
 
 Please read the [Guard documentation](http://github.com/guard/guard#readme) for more information about the Guardfile DSL.
 
-## Options
 
-You can pass any of the standard Brakeman CLI options using the :cli option:
-
-```ruby
-guard 'brakeman', :cli => '-o output.tabs --message-limit -1 -q -x DefaultRoutes,Redirect'
-```
-
-Former `:color`, `:drb`, `:port` and `:profile` options are thus deprecated and have no effect anymore.
 
 ### List of available options
 
 ```ruby
-:cli => '-o output.tabs -q'                # Pass arbitrary Brakeman CLI arguments,
-                                           # default: nil (print everything to the screen)
-
-:output => 'output.tabs'                   # Specify the output file (.tabs, .csv specify the format)
-                                           # default: nil
-
-:format => 'csv'                           # Specify the report format
-                                           # default: nil
-
-:disabled => ['DefaultRoutes','Redirect']  # Disable certain tests
-                                           # default: nil
-
-:config => 'config/brakeman'               # Use the specified brakeman configuraiton file
-                                           # default: '.brakeman'
-
-
-:rvm => ['1.8.7', '1.9.2']                 # Directly run your features on multiple ruby versions
-                                           # default: nil
 
 ```
 
@@ -77,7 +54,7 @@ Former `:color`, `:drb`, `:port` and `:profile` options are thus deprecated and 
 Issues
 ------
 
-You can report issues and feature requests to [GitHub Issues](https://github.com/netzpirat/guard-brakeman/issues). Try to figure out
+You can report issues and feature requests to [GitHub Issues](https://github.com/oreoshake/guard-brakeman/issues). Try to figure out
 where the issue belongs to: Is it an issue with Guard itself or with Guard::Brakeman? Please don't
 ask the question in the issue tracker, instead join us in our [Google group](http://groups.google.com/group/guard-dev) or on
 `#guard` (irc.freenode.net).
