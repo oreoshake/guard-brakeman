@@ -48,7 +48,7 @@ module Guard
       puts 'running all'
       @tracker = ::Brakeman.run :app_path => '.'
       
-      passed = @tracker.checks.all_warnings.empty? && @tracker.checks.errors.empty?
+      passed = @tracker.checks.all_warnings.empty? && @tracker.errors.empty?
 
       print_failed @tracker
 
