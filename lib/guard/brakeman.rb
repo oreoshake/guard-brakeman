@@ -1,6 +1,7 @@
 require 'guard'
 require 'guard/guard'
 require 'brakeman'
+require 'brakeman/tracker'
 
 module Guard
 
@@ -36,11 +37,7 @@ module Guard
       print_failed @tracker
     end
 
-    def tracker=tracker
-      @tracker = tracker
-    end
-
-    # Gets called when all specs should be run.
+    # Gets called when all checks should be run.
     #
     # @raise [:task_has_failed] when stop has failed
     #
@@ -48,7 +45,7 @@ module Guard
       puts 'running all'
       @tracker = ::Brakeman.run :app_path => '.'
       
-      passed = @tracker.checks.all_warnings.empty? && @tracker.errors.empty?
+      passed = clean_report?(@tracker)
 
       print_failed @tracker
 
@@ -78,30 +75,24 @@ module Guard
     #
     def run_on_change(paths)
       report = Runner.run(paths, @tracker, options)
-      passed = !report.all_warnings.any?
-
       print_failed report
 
-      if passed
-        @failed_paths -= paths if @options[:keep_failed]
-      else
-        @failed_paths += get_failed_paths if @options[:keep_failed]
-        @last_failed = true
-      end
+      passed = !report.all_warnings.any?
 
       throw :task_has_failed unless passed
     end
 
     private
 
-    def get_failed_paths tracker
-    end
-
     def print_failed tracker
       checks = tracker.is_a?(::Brakeman::Tracker) ? tracker.checks.all_warnings : tracker.all_warnings
       checks.each do |w|
         puts w.to_row
       end
+    end
+
+    def clean_report? tracker
+      tracker.checks.all_warnings.empty? && tracker.errors.empty?
     end
   end
 end
