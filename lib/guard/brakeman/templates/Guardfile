@@ -1,9 +1,6 @@
 guard 'brakeman' do
-  watch(%r{^app/.+\.rb$})
-  watch(%r{^app/.+\.erb$})
-  watch(%r{^app/.+\.haml$})
-  watch(%r{^app/.+\.rhtml$})
+  watch(%r{^app/.+\.(erb|haml|rhtml|rb)$})
+  watch(%r{^config/.+\.rb$})
   watch(%r{^lib/.+\.rb$})
   watch('Gemfile')
-  watch(%r{^config/.+\.rb$})
 end
