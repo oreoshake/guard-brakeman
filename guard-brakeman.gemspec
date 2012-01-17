@@ -3,7 +3,7 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'guard-brakeman'
-  s.version     = "0.1.1"
+  s.version     = "0.1.2"
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Neil Matatall']
   s.email       = ['neil@matatall.com']
@@ -14,7 +14,6 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = 'guard-brakeman'
 
   s.add_dependency 'guard',   '>= 0.2.2'
-  s.add_dependency 'bundler', '>= 1.0.0'
   s.add_dependency 'brakeman', '>= 1.2'
 
   s.add_development_dependency 'rspec',       '~> 2.6.0'
