@@ -1,7 +1,7 @@
 require 'guard'
 require 'guard/guard'
 require 'brakeman'
-require 'brakeman/tracker'
+require 'brakeman/scanner'
 
 module Guard
 
@@ -9,10 +9,6 @@ module Guard
   # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_change`.
   #
   class Brakeman < Guard
-
-    autoload :Runner, 'guard/brakeman/runner'
-    autoload :Inspector, 'guard/brakeman/inspector'
-
     # Initialize Guard::Brakeman.
     #
     # @param [Array<Guard::Watcher>] watchers the watchers in the Guard block
@@ -20,12 +16,11 @@ module Guard
     # @option options [Boolean] :notification show notifications
     # @option options [Boolean] :format use a different brakeman format when running individual features - not implemented
     # @option options [Boolean] :output specify the output file - not implemented
-    # @option options [Array<String>] :disabled specify tests to skip (comma separated) - not implemented"
+    # @option options [Array<String>] :disabled specify tests to skip (comma separated) - not implemented
     #
     def initialize(watchers = [], options = { })
       super
       @last_failed  = false
-      @failed_paths = []
     end
 
     # Gets called once when Guard starts.
@@ -33,8 +28,9 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def start
-      @tracker = ::Brakeman.run :app_path => '.'
-      print_failed @tracker
+      options = ::Brakeman::set_options(:app_path => '.')
+      @scanner = ::Brakeman::Scanner.new(options)
+      @tracker = @scanner.process
     end
 
     # Gets called when all checks should be run.
@@ -43,29 +39,9 @@ module Guard
     #
     def run_all
       puts 'running all'
-      @tracker = ::Brakeman.run :app_path => '.'
-      
-      passed = clean_report?(@tracker)
-
-      print_failed @tracker
-
-      if passed
-        @failed_paths = []
-      else
-        @failed_paths = get_failed_paths(@tracker)
-      end
-
-      @last_failed = !passed
-
-      throw :task_has_failed unless passed
-    end
-
-    # Gets called when the Guard should reload itself.
-    #
-    # @raise [:task_has_failed] when stop has failed
-    #
-    def reload
-      @failed_paths = []
+      @tracker.run_checks
+      print_failed(@tracker.checks)
+      throw :task_has_failed if @tracker.checks.all_warnings.empty?
     end
 
     # Gets called when watched paths and files have changes.
@@ -74,25 +50,18 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def run_on_change(paths)
-      report = Runner.run(paths, @tracker, options)
-      print_failed report
-
-      passed = !report.all_warnings.any?
-
-      throw :task_has_failed unless passed
+      report = ::Brakeman::rescan(@tracker, paths)
+      print_failed(report)
+      throw :task_has_failed if report.any_warnings?
     end
 
     private
 
-    def print_failed tracker
-      checks = tracker.is_a?(::Brakeman::Tracker) ? tracker.checks.all_warnings : tracker.all_warnings
-      checks.each do |w|
+    def print_failed report
+      puts "\n------ brakeman warnings --------\n"
+      report.all_warnings.each do |w|
         puts w.to_row
       end
-    end
-
-    def clean_report? tracker
-      tracker.checks.all_warnings.empty? && tracker.errors.empty?
     end
   end
 end
