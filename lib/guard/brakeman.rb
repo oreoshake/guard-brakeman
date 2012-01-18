@@ -27,7 +27,7 @@ module Guard
       puts 'running all'
       @tracker.run_checks
       print_failed(@tracker.checks)
-      throw :task_has_failed if @tracker.checks.all_warnings.empty?
+      throw :task_has_failed if @tracker.checks.all_warnings.any?
     end
 
     # Gets called when watched paths and files have changes.
