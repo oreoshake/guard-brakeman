@@ -46,9 +46,7 @@ module Guard
 
     def print_failed report
       puts "\n------ brakeman warnings --------\n"
-      report.all_warnings.each do |w|
-        puts w.to_row
-      end
+      puts report.all_warnings
     end
   end
 end
