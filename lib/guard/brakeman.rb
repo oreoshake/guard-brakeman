@@ -46,7 +46,7 @@ module Guard
 
     def print_failed report
       puts "\n------ brakeman warnings --------\n"
-      puts report.all_warnings
+      puts report.all_warnings.sort_by { |w| w.confidence }
     end
   end
 end
