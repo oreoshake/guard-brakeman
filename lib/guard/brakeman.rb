@@ -36,6 +36,8 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def run_on_change(paths)
+      return run_all unless @tracker.checks
+
       puts "rescanning #{paths}, running all checks"
       report = ::Brakeman::rescan(@tracker, paths)
       print_failed(report)
