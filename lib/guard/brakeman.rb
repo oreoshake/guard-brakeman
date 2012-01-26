@@ -66,13 +66,9 @@ module Guard
         puts
       end
 
-      existing = report.all_warnings.select do |w| 
-        not report.new_warnings.include? w
-      end
-
-      unless existing.empty?
-        puts "#{existing.length} previous warnings:"
-        puts existing.sort_by { |w| w.confidence }
+      unless report.existing_warnings.empty?
+        puts "#{report.existing_warnings.length} previous warnings:"
+        puts report.existing_warnings.sort_by { |w| w.confidence }
       end
     end
   end
