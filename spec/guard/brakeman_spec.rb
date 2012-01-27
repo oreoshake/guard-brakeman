@@ -30,7 +30,7 @@ describe Guard::Brakeman do
   describe '#run_all' do
     it 'runs all checks' do
       tracker.should_receive(:run_checks)
-      tracker.stub_chain(:checks, :all_warnings, :empty?)
+      tracker.stub_chain(:checks, :all_warnings, :any?)
       @guard.run_all
     end
   end
