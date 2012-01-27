@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = 'guard-brakeman'
 
   s.add_dependency 'guard',   '>= 0.2.2'
-  s.add_dependency 'brakeman', '>= 1.2'
+  s.add_dependency 'brakeman', '>= 1.2.2'
 
   s.add_development_dependency 'rspec',       '~> 2.6.0'
   s.add_development_dependency 'guard-rspec', '~> 0.3.1'
