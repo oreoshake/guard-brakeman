@@ -18,4 +18,5 @@ group :development, :test do
   gem 'guard-bundler'
   gem 'guard-rspec'
   gem 'rspec'
+  gem 'aruba'
 end
