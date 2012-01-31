@@ -1,4 +1,5 @@
 source :rubygems
+gemspec
 
 require 'rbconfig'
 
@@ -11,11 +12,11 @@ if RbConfig::CONFIG['target_os'] =~ /linux/i
   gem 'libnotify',  '~> 0.3.0'
 end
 
-gem 'brakeman'
-
 group :development, :test do
   gem 'rake'
   gem 'guard-bundler'
   gem 'guard-rspec'
+  gem 'guard-cucumber'
   gem 'rspec'
+  gem 'aruba'
 end
