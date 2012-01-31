@@ -47,27 +47,35 @@ module Guard
     private
 
     def print_failed report
-      puts "\n------ brakeman warnings --------\n"
+      UI.warning "\n------ brakeman warnings --------\n"
+
+      Notifier.notify("#{report.all_warnings.count} brakeman findings", :title => "Brakeman results", :image => :pending)
       puts report.all_warnings.sort_by { |w| w.confidence }
     end
 
     def print_changed report
-      puts "\n------ brakeman warnings --------\n"
+      UI.info "\n------ brakeman warnings --------\n"
 
       unless report.fixed_warnings.empty?
-        puts "#{report.fixed_warnings.length} fixed warnings:"
+        message = "#{report.fixed_warnings.length} fixed warning(s)"
+        Notifier.notify(message, :title => "Brakeman results", :image => :success)
+        UI.info(message + ":")
         puts report.fixed_warnings.sort_by { |w| w.confidence }
         puts
       end
 
       unless report.new_warnings.empty?
-        puts "#{report.new_warnings.length} new warnings:"
+        message = "#{report.new_warnings.length} new warning(s)"
+        Notifier.notify(message, :title => "Brakeman results", :image => :failed)
+        UI.warning message + ":"
         puts report.new_warnings.sort_by { |w| w.confidence }
         puts
       end
 
       unless report.existing_warnings.empty?
-        puts "#{report.existing_warnings.length} previous warnings:"
+        message = "#{report.existing_warnings.length} previous warning(s)"
+        Notifier.notify(message, :title => "Brakeman results", :image => :pending)
+        UI.warning message + ":"
         puts report.existing_warnings.sort_by { |w| w.confidence }
       end
     end
