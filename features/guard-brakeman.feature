@@ -1,4 +1,4 @@
-@no-clobber @aruba @announce
+@no-clobber @aruba
 Feature: Guard brakeman 
 	Background:
 		Given I cd to "default_app"
