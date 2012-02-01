@@ -13,5 +13,5 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 Cucumber::Rake::Task.new(:cukes) do |t|
-  t.cucumber_opts = %w{--format pretty}
+  t.cucumber_opts = %w{--format progress}
 end
