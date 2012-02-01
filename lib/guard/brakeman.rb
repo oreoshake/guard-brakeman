@@ -22,11 +22,15 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def start
-      scanner_opts = ::Brakeman::set_options(:app_path => '.')
+      scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
       @scanner = ::Brakeman::Scanner.new(scanner_opts)
       @tracker = @scanner.process
 
-      run_all if @options[:run_on_start]
+      if @options[:run_on_start]
+        run_all 
+      else
+        Notifier.notify("Brakeman is ready to work!", :title => "Brakeman results", :image => :pending) if @options[:notifications]
+      end
     end
 
     # Gets called when all checks should be run.
