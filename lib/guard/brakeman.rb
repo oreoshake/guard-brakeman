@@ -11,6 +11,16 @@ module Guard
   class Brakeman < Guard
     def initialize(watchers = [], options = { })
       super
+
+      if options[:skip_checks]
+        puts options
+        puts options.class
+        options[:skip_checks] = options[:skip_checks].map do |val| 
+          # mimic Brakeman::set_options behavior
+          val[0,5] == "Check" ? val : "Check" << val
+        end
+      end
+
       @options = {
           :notifications => true,
           :run_on_start => false
