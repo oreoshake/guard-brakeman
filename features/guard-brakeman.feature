@@ -12,6 +12,6 @@ Feature: Guard brakeman
 
 	Scenario: Triggering a change event smoke test
 		When I run `guard` interactively
-    	And I add a watched file
+    	And I edit a watched file
     	And I type "e"
     	Then the output should contain "Checks finished, collecting results..."
