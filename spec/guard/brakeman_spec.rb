@@ -10,12 +10,10 @@ describe Guard::Brakeman do
 
   before(:each) do
     @guard = Guard::Brakeman.new
-    @guard.stub(:print_failed)
+    
     @guard.instance_variable_set(:@tracker, tracker)
     ::Brakeman.stub(:set_options)
   end
-
-  describe '#initialize'
 
   describe '#start' do
     it 'initializes brakeman by scanning all files' do
@@ -29,6 +27,7 @@ describe Guard::Brakeman do
 
   describe '#run_all' do
     it 'runs all checks' do
+      @guard.stub(:print_failed)
       tracker.should_receive(:run_checks)
       tracker.stub_chain(:checks, :all_warnings, :any?)
       @guard.run_all
@@ -44,4 +43,20 @@ describe Guard::Brakeman do
       @guard.run_on_change(['files/file'])
     end
   end
+
+  context 'notifying users' do
+    describe '#print_failed' do
+      it 'notifies the user ' do
+        ::Guard::Notifier.should_receive :notify
+        @guard.send :print_failed, report
+      end
+
+      it 'does not notify the user if disabed' do
+        ::Guard::Notifier.should_not_receive :notify
+        @guard.instance_variable_set(:@options, {:notifications => false})
+        @guard.send :print_failed, report
+      end
+    end    
+  end
+
 end

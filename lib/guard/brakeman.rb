@@ -9,6 +9,13 @@ module Guard
   # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_change`.
   #
   class Brakeman < Guard
+    def initialize(watchers = [], options = { })
+      super
+      @options = {
+          :notifications => true
+      }.update(options)
+    end
+
     # Gets called once when Guard starts.
     #
     # @raise [:task_has_failed] when stop has failed
@@ -49,7 +56,7 @@ module Guard
     def print_failed report
       UI.warning "\n------ brakeman warnings --------\n"
 
-      Notifier.notify("#{report.all_warnings.count} brakeman findings", :title => "Brakeman results", :image => :pending)
+      Notifier.notify("#{report.all_warnings.count} brakeman findings", :title => "Brakeman results", :image => :pending) if @options[:notifications]
       puts report.all_warnings.sort_by { |w| w.confidence }
     end
 
@@ -58,7 +65,7 @@ module Guard
 
       unless report.fixed_warnings.empty?
         message = "#{report.fixed_warnings.length} fixed warning(s)"
-        Notifier.notify(message, :title => "Brakeman results", :image => :success)
+        Notifier.notify(message, :title => "Brakeman results", :image => :success) if @options[:notifications]
         UI.info(message + ":")
         puts report.fixed_warnings.sort_by { |w| w.confidence }
         puts
@@ -66,7 +73,7 @@ module Guard
 
       unless report.new_warnings.empty?
         message = "#{report.new_warnings.length} new warning(s)"
-        Notifier.notify(message, :title => "Brakeman results", :image => :failed)
+        Notifier.notify(message, :title => "Brakeman results", :image => :failed) if @options[:notifications]
         UI.warning message + ":"
         puts report.new_warnings.sort_by { |w| w.confidence }
         puts
@@ -74,7 +81,7 @@ module Guard
 
       unless report.existing_warnings.empty?
         message = "#{report.existing_warnings.length} previous warning(s)"
-        Notifier.notify(message, :title => "Brakeman results", :image => :pending)
+        Notifier.notify(message, :title => "Brakeman results", :image => :pending) if @options[:notifications]
         UI.warning message + ":"
         puts report.existing_warnings.sort_by { |w| w.confidence }
       end
