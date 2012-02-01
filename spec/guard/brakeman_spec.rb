@@ -12,29 +12,41 @@ describe Guard::Brakeman do
     @guard = Guard::Brakeman.new
     
     @guard.instance_variable_set(:@tracker, tracker)
-    @guard.instance_variable_set(:@options, {:notifications => false})
-    ::Brakeman.stub(:set_options)
+    @guard.instance_variable_set(:@options, {:notifications => false, :app_path => 'tmp/aruba/default_app'})
   end
 
   describe '#start' do
     let(:scanner) { double }
     before(:each) do
-      ::Brakeman::Scanner.should_receive(:new).and_return(scanner)
+      scanner.stub(:process).and_return(tracker)
     end
 
     it 'initializes brakeman by scanning all files' do
+      ::Brakeman::Scanner.stub(:new).and_return(scanner)
       scanner.should_receive(:process)
       @guard.start
     end
 
     context 'with the run_on_start option' do
       before(:each) do
-        @guard.instance_variable_set(:@options, {:run_on_start => true})
+        @guard.instance_variable_set(:@options, @guard.instance_variable_get(:@options).merge({:run_on_start => true}))
       end
       
       it 'runs all checks' do
         scanner.stub(:process).and_return(tracker)
         @guard.should_receive(:run_all)
+        @guard.start
+      end
+    end
+
+    context 'with the exclude option' do
+      let(:options) { {:skip_checks => ['CheckDefaultRoutes']} }
+      before(:each) do
+        @guard.instance_variable_set(:@options, @guard.instance_variable_get(:@options).merge(options))
+      end
+
+      it 'does not run the specified checks' do
+        ::Brakeman::Scanner.should_receive(:new).with(hash_including(options)).and_return(scanner)
         @guard.start
       end
     end
