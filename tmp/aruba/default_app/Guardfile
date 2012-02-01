@@ -1,4 +1,4 @@
-guard 'brakeman' do
+guard 'brakeman', :notificaitons => false do
   watch(%r{^app/.+\.(erb|haml|rhtml|rb)$})
   watch(%r{^config/.+\.rb$})
   watch(%r{^lib/.+\.rb$})
