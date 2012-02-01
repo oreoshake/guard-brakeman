@@ -46,7 +46,7 @@ Please read the [Guard documentation](http://github.com/guard/guard#readme) for 
 ### List of available options
 
 ```ruby
-
+:notifications => false # display Growl notifications, defaults to true
 ```
 
 ## Brakeman configuration
