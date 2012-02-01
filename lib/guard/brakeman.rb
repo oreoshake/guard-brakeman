@@ -12,7 +12,8 @@ module Guard
     def initialize(watchers = [], options = { })
       super
       @options = {
-          :notifications => true
+          :notifications => true,
+          :run_on_start => false
       }.update(options)
     end
 
@@ -21,9 +22,11 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def start
-      options = ::Brakeman::set_options(:app_path => '.')
-      @scanner = ::Brakeman::Scanner.new(options)
+      scanner_opts = ::Brakeman::set_options(:app_path => '.')
+      @scanner = ::Brakeman::Scanner.new(scanner_opts)
       @tracker = @scanner.process
+
+      run_all if @options[:run_on_start]
     end
 
     # Gets called when all checks should be run.

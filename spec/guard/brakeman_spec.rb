@@ -17,12 +17,26 @@ describe Guard::Brakeman do
   end
 
   describe '#start' do
-    it 'initializes brakeman by scanning all files' do
-      scanner = double
+    let(:scanner) { double }
+    before(:each) do
       ::Brakeman::Scanner.should_receive(:new).and_return(scanner)
-      scanner.should_receive(:process)
+    end
 
+    it 'initializes brakeman by scanning all files' do
+      scanner.should_receive(:process)
       @guard.start
+    end
+
+    context 'with the run_on_start option' do
+      before(:each) do
+        @guard.instance_variable_set(:@options, {:run_on_start => true})
+      end
+      
+      it 'runs all checks' do
+        scanner.stub(:process).and_return(tracker)
+        @guard.should_receive(:run_all)
+        @guard.start
+      end
     end
   end
 
