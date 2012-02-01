@@ -47,6 +47,7 @@ Please read the [Guard documentation](http://github.com/guard/guard#readme) for 
 
 ```ruby
 :notifications => false # display Growl notifications, defaults to true
+:run_on_start  => true  # run all checks on startup, defaults to false
 ```
 
 ## Brakeman configuration

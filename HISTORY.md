@@ -1,3 +1,8 @@
+# 0.1.8
+- More consistent output
+- Consolidate growls into a single message
+- Add run_on_start option
+
 # 0.1.7
 - Ability to turn off notifications
 - Test backfill
