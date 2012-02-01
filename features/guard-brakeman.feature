@@ -14,4 +14,4 @@ Feature: Guard brakeman
 		When I run `guard` interactively
     	And I add a watched file
     	And I type "e"
-    	Then the output should contain "running something else"
+    	Then the output should contain "Checks finished, collecting results..."
