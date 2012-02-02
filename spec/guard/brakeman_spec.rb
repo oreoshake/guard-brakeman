@@ -73,7 +73,7 @@ describe Guard::Brakeman do
 
   describe '#print_failed' do
     before(:each) do
-      report.stub(:all_warnings).and_return [double(:confidence => 2)]
+      report.stub(:all_warnings).and_return [double(:confidence => 0)]
     end
 
     context 'with the chatty flag' do
@@ -101,7 +101,7 @@ describe Guard::Brakeman do
   
   describe '#print_changed' do
     before(:each) do
-      report.stub(:all_warnings).and_return [double(:confidence => 1)]
+      report.stub(:all_warnings).and_return [double(:confidence => 3)]
     end
 
     context 'with the min_confidence setting' do

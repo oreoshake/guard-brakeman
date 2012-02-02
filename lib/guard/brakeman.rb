@@ -27,7 +27,7 @@ module Guard
           :notifications => true,
           :run_on_start => false,
           :chatty => false,
-          :min_confidence => 0
+          :min_confidence => 1
       }.update(options)
     end
 
@@ -37,7 +37,6 @@ module Guard
     #
     def start
       scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
-      puts scanner_opts
       @scanner = ::Brakeman::Scanner.new(scanner_opts)
       @tracker = @scanner.process
 
@@ -67,7 +66,7 @@ module Guard
     def run_on_change(paths)
       return run_all unless @tracker.checks
 
-      UI.info "rescanning #{paths}, running all checks"
+      UI.info "\n\nrescanning #{paths}, running all checks"
       report = ::Brakeman::rescan(@tracker, paths)
       print_changed(report)
       throw :task_has_failed if report.any_warnings?
@@ -101,10 +100,8 @@ module Guard
         results_notification = "#{fixed_warnings.length} fixed warning(s)\n"
         UI.info(UI.send(:color, results_notification, 'green')) # janky
 
-        if @options[:chatty]
-          should_alert = true 
-          message += results_notification
-        end
+        should_alert = true 
+        message += results_notification
 
         puts fixed_warnings.sort_by { |w| w.confidence }
         puts
@@ -135,11 +132,13 @@ module Guard
         puts existing_warnings.sort_by { |w| w.confidence }
       end
 
-      Notifier.notify(message.chomp, :title => "Brakeman results", :image => icon) if @options[:notifications] && should_alert
+      if @options[:notifications] && should_alert
+        Notifier.notify(message.chomp, :title => "Brakeman results", :image => icon) 
+      end
     end
 
     def reject_below_threshold(warnings)
-      warnings.reject {|w| w.confidence < @options[:min_confidence].to_i}
+      warnings.reject {|w| w.confidence > (3 - @options[:min_confidence].to_i)}
     end
   end
 end
