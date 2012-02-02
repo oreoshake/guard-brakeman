@@ -1,3 +1,8 @@
+# 0.2.0
+- Moar better notifications
+- 'chatty' config option allows you to enter "fix mode" where ALL brakeman activity is growl'd.  Off by default, which means you are only alerted on NEW or FIXED findings
+- Add :min_confidence setting to ignore results under a certain threshold
+
 # 0.1.8
 - More consistent output
 - Consolidate growls into a single message
