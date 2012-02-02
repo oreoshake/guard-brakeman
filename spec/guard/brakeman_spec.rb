@@ -73,12 +73,12 @@ describe Guard::Brakeman do
 
   describe '#print_failed' do
     before(:each) do
-      report.stub(:all_warnings).and_return [double.as_null_object]
+      report.stub(:all_warnings).and_return [double(:confidence => 2)]
     end
 
-    context 'with notifications on' do
+    context 'with the chatty flag' do
       before(:each) do
-        @guard.instance_variable_set(:@options, {:notifications => true})
+        @guard.instance_variable_set(:@options, {:chatty => true})
       end
 
       it 'notifies the user' do
@@ -89,7 +89,7 @@ describe Guard::Brakeman do
 
     context 'with notifications disabled' do
       before(:each) do
-        @guard.instance_variable_set(:@options, {:notifications => false})
+        @guard.instance_variable_set(:@options, {:chatty => false})
       end
 
       it 'does not notify the user' do
@@ -101,7 +101,19 @@ describe Guard::Brakeman do
   
   describe '#print_changed' do
     before(:each) do
-      report.stub(:all_warnings).and_return [double.as_null_object]
+      report.stub(:all_warnings).and_return [double(:confidence => 1)]
+    end
+
+    context 'with the min_confidence setting' do
+      let(:options) { {:min_confidence => 2} }
+      before(:each) do
+        @guard.instance_variable_set(:@options, @guard.instance_variable_get(:@options).merge(options))
+      end
+      
+      it 'does not alert on warnings below the threshold' do
+        ::Guard::Notifier.should_not_receive :notify
+        @guard.send :print_changed, report
+      end
     end
 
     context 'with notifications on' do
