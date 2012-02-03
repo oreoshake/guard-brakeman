@@ -1,4 +1,4 @@
-# Guard::Brakeman [![Build Status](https://secure.travis-ci.org/oreoshake/guard-brakeman.png)](http://travis-ci.org/oreoshake/guard-brakeman)
+# Guard::Brakeman [![Build Status](https://secure.travis-ci.org/guard/guard-brakeman.png)](http://travis-ci.org/oreoshake/guard-brakeman)
 
 Guard::Brakeman allows you to automatically run [Brakeman](http://brakemanscanner.org/) tests when files are modified.
 
