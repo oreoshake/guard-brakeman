@@ -22,6 +22,10 @@ Add the default Guard::Brakeman template to your `Guardfile` by running:
 $ guard init brakeman
 ```
 
+## Use sublime Text 2?
+
+Check out [sublime_guard](https://github.com/cyphactor/sublime_guard)!  It gives you control Guard without leaving the editor.  This is even more powerful with Growl notifications.  Enter distraction-free mode and never leave! 
+
 ## Usage
 
 Please read the [Guard usage documentation](https://github.com/guard/guard#readme).
