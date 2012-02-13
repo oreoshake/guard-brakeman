@@ -1,3 +1,6 @@
+# 0.3.0
+- The output of guard-brakeman now uses the same code as the regular brakeman reports and uses the same options (thanks DarkTatka for the input)
+
 # 0.2.0
 - Moar better notifications
 - 'chatty' config option allows you to enter "fix mode" where ALL brakeman activity is growl'd.  Off by default, which means you are only alerted on NEW or FIXED findings

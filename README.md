@@ -50,10 +50,12 @@ Please read the [Guard documentation](http://github.com/guard/guard#readme) for 
 ### List of available options
 
 ```ruby
-:notifications  => false # display Growl notifications, defaults to true
-:run_on_start   => true  # run all checks on startup, defaults to false
-:min_confidence => 3     # only alert on warnings above a threshold, defaults to 1
-:chatty         => true  # notify on ALL changes.  Defaults to false, only new or fixed warnings trigger a Growl
+:output_file    => 'donkey' # write the results to the specified file, optinally supply extension which will be used for :output_format
+:output_format  => 'html'   # specify the output format
+:notifications  => false    # display Growl notifications, defaults to true
+:run_on_start   => true     # run all checks on startup, defaults to false
+:min_confidence => 3        # only alert on warnings above a threshold, defaults to 1
+:chatty         => true     # notify on ALL changes.  Defaults to false, only new or fixed warnings trigger a Growl
 ```
 
 ## Brakeman configuration
