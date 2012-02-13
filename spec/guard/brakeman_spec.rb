@@ -87,6 +87,24 @@ describe Guard::Brakeman do
       end
     end
 
+    context 'with the output option' do
+      before(:each) do
+        @guard.instance_variable_set(:@options, {:output_file => 'test.csv'})
+      end
+
+      it 'writes the brakeman report to disk' do
+        @guard.should_receive(:write_report)
+        @guard.send :print_failed, report
+      end 
+
+      it 'adds the report filename to the growl' do
+        @guard.stub(:write_report)
+        @guard.instance_variable_set(:@options, @guard.instance_variable_get(:@options).merge({:chatty => true}))
+        ::Guard::Notifier.should_receive(:notify).with(/test\.csv/, anything)
+        @guard.send :print_failed, report
+      end 
+    end
+
     context 'with notifications disabled' do
       before(:each) do
         @guard.instance_variable_set(:@options, {:chatty => false})
@@ -136,6 +154,33 @@ describe Guard::Brakeman do
         ::Guard::Notifier.should_not_receive :notify
         @guard.send :print_changed, report
       end
+    end
+
+    context 'with the output option' do
+      before(:each) do
+        @guard.instance_variable_set(:@options, {:output_file => 'test.csv'})
+      end
+
+      it 'writes the brakeman report to disk' do
+        File.should_receive(:open).with('test.csv', 'w')
+        @guard.send :print_changed, report
+      end 
+
+      it 'adds the report filename to the growl' do
+        @guard.stub(:write_report)
+        @guard.instance_variable_set(:@options, @guard.instance_variable_get(:@options).merge({:notifications => true}))
+        ::Guard::Notifier.should_receive(:notify).with(/test\.csv/, anything)
+        @guard.send :print_changed, report
+      end 
+    end
+  end
+
+  describe "#write_report" do
+    it 'writes the report to disk' do
+      @guard.instance_variable_set(:@options, {:output_file => 'test.csv'})
+
+      File.should_receive(:open).with('test.csv', 'w')
+      @guard.send(:write_report)
     end
   end
 end

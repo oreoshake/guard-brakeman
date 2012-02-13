@@ -36,8 +36,8 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def start
-      scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
-      @scanner = ::Brakeman::Scanner.new(scanner_opts)
+      @scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
+      @scanner = ::Brakeman::Scanner.new(@scanner_opts)
       @tracker = @scanner.process
 
       if @options[:run_on_start]
@@ -82,6 +82,13 @@ module Guard
       all_warnings = reject_below_threshold(report.all_warnings)
 
       puts all_warnings.sort_by { |w| w.confidence }
+
+      message = "#{all_warnings.count} brakeman findings"
+
+      if @options[:output_file]
+        write_report
+        message += "\nResults written to #{@options[:output_file]}" 
+      end
 
       if @options[:chatty] && all_warnings.any?
         ::Guard::Notifier.notify(message, :title => "Full Brakeman results", :image => icon) 
@@ -132,6 +139,13 @@ module Guard
         puts existing_warnings.sort_by { |w| w.confidence }
       end
 
+
+
+      if @options[:output_file]
+        write_report
+        message += "\nResults written to #{@options[:output_file]}" 
+      end
+
       if @options[:notifications] && should_alert
         ::Guard::Notifier.notify(message.chomp, :title => "Brakeman results", :image => icon) 
       end
@@ -139,6 +153,12 @@ module Guard
 
     def reject_below_threshold(warnings)
       warnings.reject {|w| w.confidence > (3 - @options[:min_confidence].to_i)}
+    end
+
+    def write_report
+      File.open @options[:output_file], "w" do |f|
+        f.puts @tracker.report.send(@scanner_opts[:output_format])
+      end
     end
   end
 end
