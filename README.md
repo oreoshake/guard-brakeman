@@ -50,8 +50,7 @@ Please read the [Guard documentation](http://github.com/guard/guard#readme) for 
 ### List of available options
 
 ```ruby
-:output_file    => 'donkey' # write the results to the specified file, optinally supply extension which will be used for :output_format
-:output_format  => 'html'   # specify the output format
+:output_file    => 'donkey.html' # write the results to the specified file
 :notifications  => false    # display Growl notifications, defaults to true
 :run_on_start   => true     # run all checks on startup, defaults to false
 :min_confidence => 3        # only alert on warnings above a threshold, defaults to 1

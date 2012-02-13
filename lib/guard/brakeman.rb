@@ -37,7 +37,10 @@ module Guard
     #
     def start
       @scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
+      @options.merge!(@scanner_opts)
+      
       @scanner = ::Brakeman::Scanner.new(@scanner_opts)
+
       @tracker = @scanner.process
 
       if @options[:run_on_start]
@@ -157,7 +160,7 @@ module Guard
 
     def write_report
       File.open @options[:output_file], "w" do |f|
-        f.puts @tracker.report.send(@scanner_opts[:output_format])
+        f.puts @tracker.report.send(@options[:output_format])
       end
     end
   end
