@@ -43,7 +43,7 @@ module Guard
       if @options[:run_on_start]
         run_all 
       elsif @options[:chatty]
-        Notifier.notify("Brakeman is ready to work!", :title => "Brakeman started", :image => :pending)
+        ::Guard::Notifier.notify("Brakeman is ready to work!", :title => "Brakeman started", :image => :pending)
       end
     end
 
@@ -84,7 +84,7 @@ module Guard
       puts all_warnings.sort_by { |w| w.confidence }
 
       if @options[:chatty] && all_warnings.any?
-        Notifier.notify("#{all_warnings.count} brakeman findings", :title => "Full Brakeman results", :image => icon) 
+        ::Guard::Notifier.notify(message, :title => "Full Brakeman results", :image => icon) 
       end
     end
 
@@ -133,7 +133,7 @@ module Guard
       end
 
       if @options[:notifications] && should_alert
-        Notifier.notify(message.chomp, :title => "Brakeman results", :image => icon) 
+        ::Guard::Notifier.notify(message.chomp, :title => "Brakeman results", :image => icon) 
       end
     end
 
