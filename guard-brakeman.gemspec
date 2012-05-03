@@ -3,7 +3,7 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'guard-brakeman'
-  s.version     = '0.3.2'
+  s.version     = '0.4.0'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Neil Matatall', 'Justin Collins']
   s.homepage    = 'http://rubygems.org/gems/guard-brakeman'
@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project         = 'guard-brakeman'
 
   s.add_dependency 'guard',   '>= 1.0.1'
-  s.add_dependency 'brakeman', '>= 1.5.2'
+  s.add_dependency 'brakeman', '>= 1.5.3'
 
   s.files        = Dir.glob('{lib}/**/*') + %w[LICENSE README.md]
   s.require_path = 'lib'

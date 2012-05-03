@@ -2,6 +2,9 @@
 
 Guard::Brakeman allows you to automatically run [Brakeman](http://brakemanscanner.org/) tests when files are modified.
 
+Use guard-brakeman >= 0.4.0 for brakeman >= 1.5.3
+--------------
+And use < 0.4.0 for brakeman < 1.5.3
 
 ## Install
 

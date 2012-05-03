@@ -1,3 +1,6 @@
+# 0.4.0
+- Updated output support to handle the multiple output files introduced with brakeman 1.5.3
+
 # 0.3.0
 - The output of guard-brakeman now uses the same code as the regular brakeman reports and uses the same options (thanks DarkTatka for the input)
 
