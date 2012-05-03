@@ -88,9 +88,9 @@ module Guard
 
       message = "#{all_warnings.count} brakeman findings"
 
-      if @options[:output_file]
+      if @options[:output_files]
         write_report
-        message += "\nResults written to #{@options[:output_file]}" 
+        message += "\nResults written to #{@options[:output_files]}" 
       end
 
       if @options[:chatty] && all_warnings.any?
@@ -144,9 +144,9 @@ module Guard
 
 
 
-      if @options[:output_file]
+      if @options[:output_files]
         write_report
-        message += "\nResults written to #{@options[:output_file]}" 
+        message += "\nResults written to #{@options[:output_files]}" 
       end
 
       if @options[:notifications] && should_alert
@@ -159,8 +159,10 @@ module Guard
     end
 
     def write_report
-      File.open @options[:output_file], "w" do |f|
-        f.puts @tracker.report.send(@options[:output_format])
+      @options[:output_files].each_with_index do |output_file, i|
+        File.open output_file, "w" do |f|
+          f.puts @tracker.report.send(@options[:output_formats][i])
+        end
       end
     end
   end
