@@ -89,7 +89,7 @@ describe Guard::Brakeman do
 
     context 'with the output option' do
       before(:each) do
-        @guard.instance_variable_set(:@options, {:output_file => 'test.csv'})
+        @guard.instance_variable_set(:@options, {:output_files => ['test.csv']})
       end
 
       it 'writes the brakeman report to disk' do
@@ -158,7 +158,7 @@ describe Guard::Brakeman do
 
     context 'with the output option' do
       before(:each) do
-        @guard.instance_variable_set(:@options, {:output_file => 'test.csv'})
+        @guard.instance_variable_set(:@options, {:output_files => ['test.csv']})
       end
 
       it 'writes the brakeman report to disk' do
@@ -177,7 +177,7 @@ describe Guard::Brakeman do
 
   describe "#write_report" do
     it 'writes the report to disk' do
-      @guard.instance_variable_set(:@options, {:output_file => 'test.csv'})
+      @guard.instance_variable_set(:@options, {:output_files => ['test.csv']})
 
       File.should_receive(:open).with('test.csv', 'w')
       @guard.send(:write_report)
