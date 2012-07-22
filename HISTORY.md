@@ -1,3 +1,6 @@
+# 0.5.0 
+- Support for >= guard-1.1.0
+
 # 0.4.0
 - Updated output support to handle the multiple output files introduced with brakeman 1.5.3
 
