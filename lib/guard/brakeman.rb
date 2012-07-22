@@ -6,7 +6,7 @@ require 'brakeman/scanner'
 module Guard
 
   # The Brakeman guard that gets notifications about the following
-  # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_change`.
+  # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_changes`.
   #
   class Brakeman < Guard
     def initialize(watchers = [], options = { })
@@ -66,7 +66,7 @@ module Guard
     # @param [Array<String>] paths the changed paths and files
     # @raise [:task_has_failed] when stop has failed
     #
-    def run_on_change(paths)
+    def run_on_changes paths
       return run_all unless @tracker.checks
 
       UI.info "\n\nrescanning #{paths}, running all checks"

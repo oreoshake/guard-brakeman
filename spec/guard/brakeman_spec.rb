@@ -16,10 +16,7 @@ describe Guard::Brakeman do
   end
 
   describe '#start' do
-    let(:scanner) { double }
-    before(:each) do
-      scanner.stub(:process).and_return(tracker)
-    end
+    let(:scanner) { double(:process => tracker) }
 
     it 'initializes brakeman by scanning all files' do
       ::Brakeman::Scanner.stub(:new).and_return(scanner)
@@ -67,7 +64,7 @@ describe Guard::Brakeman do
     it 'rescans changed files, and checks all files' do
       ::Brakeman.should_receive(:rescan).with(tracker, ['files/file']).and_return(report)
       report.stub(:any_warnings?)
-      @guard.run_on_change(['files/file'])
+      @guard.run_on_changes(['files/file'])
     end
   end
 
