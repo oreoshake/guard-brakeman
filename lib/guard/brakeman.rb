@@ -105,7 +105,7 @@ module Guard
       fixed_warnings = report.fixed_warnings
       if fixed_warnings.any?
         icon = :success
-        results_notification = "#{fixed_warnings.length} fixed warning(s)\n"
+        results_notification = pluralize(fixed_warnings.length,  "fixed warning")
         UI.info(UI.send(:color, results_notification, 'green')) # janky
 
         should_alert = true 
@@ -117,7 +117,7 @@ module Guard
 
       new_warnings = report.new_warnings
       if new_warnings.any?
-        new_warning_message = "#{new_warnings.length} new warning(s)\n"
+        new_warning_message = pluralize(new_warnings.length,  "new warning")
         UI.info(UI.send(:color, new_warning_message, 'red')) # janky
 
         message += new_warning_message
@@ -133,7 +133,7 @@ module Guard
         should_alert = true if @options[:chatty]
         icon ||= :pending
         
-        existing_warning_message = "#{existing_warnings.length} previous warning(s)\n"
+        existing_warning_message = pluralize(existing_warnings.length, "previous warning")
         UI.warning existing_warning_message
         message += existing_warning_message
 
@@ -156,6 +156,11 @@ module Guard
           f.puts @tracker.report.send(@options[:output_formats][i])
         end
       end
+    end
+
+    # stolen from rails
+    def pluralize(count, singular, plural = nil)
+      "#{count || 0} " + ((count == 1 || count =~ /^1(\.0+)?$/) ? singular : (plural || singular.pluralize))
     end
   end
 end
