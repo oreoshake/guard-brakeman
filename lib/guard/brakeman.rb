@@ -82,7 +82,7 @@ module Guard
 
       all_warnings = report.all_warnings
 
-      UI.info all_warnings.sort_by { |w| w.confidence }
+      puts all_warnings.sort_by { |w| w.confidence }
 
       message = "#{all_warnings.count} brakeman findings"
 
@@ -111,21 +111,21 @@ module Guard
         should_alert = true 
         message += results_notification
 
-        UI.info fixed_warnings.sort_by { |w| w.confidence }
-        UI.info ""
+        puts fixed_warnings.sort_by { |w| w.confidence }
+        puts ""
       end
 
       new_warnings = report.new_warnings
       if new_warnings.any?
         new_warning_message = "#{new_warnings.length} new warning(s)\n"
-        UI.error new_warning_message
-        message += new_warning_message
+        UI.info(UI.send(:color, new_warning_message, 'red')) # janky
 
+        message += new_warning_message
         should_alert = true
         icon = :failed
 
-        UI.info new_warnings.sort_by { |w| w.confidence }
-        UI.info ""
+        puts new_warnings.sort_by { |w| w.confidence }
+        puts ""
       end
 
       existing_warnings = report.existing_warnings
@@ -137,7 +137,7 @@ module Guard
         UI.warning existing_warning_message
         message += existing_warning_message
 
-        UI.info existing_warnings.sort_by { |w| w.confidence }
+        puts existing_warnings.sort_by { |w| w.confidence }
       end
 
       if @options[:output_files]
