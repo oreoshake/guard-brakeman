@@ -82,7 +82,7 @@ module Guard
 
       icon = report.all_warnings.count > 0 ? :failed : :success
 
-      all_warnings = reject_below_threshold(report.all_warnings)
+      all_warnings = report.all_warnings
 
       puts all_warnings.sort_by { |w| w.confidence }
 
@@ -104,7 +104,7 @@ module Guard
       message = ""
       should_alert = false
 
-      fixed_warnings = reject_below_threshold(report.fixed_warnings)
+      fixed_warnings = report.fixed_warnings
       if fixed_warnings.any?
         icon = :success
         results_notification = "#{fixed_warnings.length} fixed warning(s)\n"
@@ -117,7 +117,7 @@ module Guard
         puts
       end
 
-      new_warnings = reject_below_threshold(report.new_warnings)
+      new_warnings = report.new_warnings
       if new_warnings.any?
         new_warning_message = "#{new_warnings.length} new warning(s)\n"
         UI.error new_warning_message
@@ -130,7 +130,7 @@ module Guard
         puts
       end
 
-      existing_warnings = reject_below_threshold(report.existing_warnings)
+      existing_warnings = report.existing_warnings
       if existing_warnings.any?
         should_alert = true if @options[:chatty]
         icon ||= :pending
@@ -152,10 +152,6 @@ module Guard
       if @options[:notifications] && should_alert
         ::Guard::Notifier.notify(message.chomp, :title => "Brakeman results", :image => icon) 
       end
-    end
-
-    def reject_below_threshold(warnings)
-      warnings.reject {|w| w.confidence > (3 - @options[:min_confidence].to_i)}
     end
 
     def write_report
