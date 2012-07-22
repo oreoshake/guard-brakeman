@@ -39,9 +39,7 @@ module Guard
       @scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
       @options.merge!(@scanner_opts)
       
-      @scanner = ::Brakeman::Scanner.new(@scanner_opts)
-
-      @tracker = @scanner.process
+      @tracker = ::Brakeman::Scanner.new(@scanner_opts).process
 
       if @options[:run_on_start]
         run_all 
@@ -84,7 +82,7 @@ module Guard
 
       all_warnings = report.all_warnings
 
-      puts all_warnings.sort_by { |w| w.confidence }
+      UI.info all_warnings.sort_by { |w| w.confidence }
 
       message = "#{all_warnings.count} brakeman findings"
 
@@ -113,8 +111,8 @@ module Guard
         should_alert = true 
         message += results_notification
 
-        puts fixed_warnings.sort_by { |w| w.confidence }
-        puts
+        UI.info fixed_warnings.sort_by { |w| w.confidence }
+        UI.info ""
       end
 
       new_warnings = report.new_warnings
@@ -126,8 +124,8 @@ module Guard
         should_alert = true
         icon = :failed
 
-        puts new_warnings.sort_by { |w| w.confidence }
-        puts
+        UI.info new_warnings.sort_by { |w| w.confidence }
+        UI.info ""
       end
 
       existing_warnings = report.existing_warnings
@@ -139,10 +137,8 @@ module Guard
         UI.warning existing_warning_message
         message += existing_warning_message
 
-        puts existing_warnings.sort_by { |w| w.confidence }
+        UI.info existing_warnings.sort_by { |w| w.confidence }
       end
-
-
 
       if @options[:output_files]
         write_report
