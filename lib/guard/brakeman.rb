@@ -12,6 +12,8 @@ module Guard
     def initialize(watchers = [], options = { })
       super
 
+      ::Brakeman.instance_variable_set(:@quiet, options[:quiet])
+
       if options[:skip_checks]
         options[:skip_checks] = options[:skip_checks].map do |val|
           # mimic Brakeman::set_options behavior
@@ -38,7 +40,6 @@ module Guard
     def start
       @scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
       @options.merge!(@scanner_opts)
-
       @tracker = ::Brakeman::Scanner.new(@scanner_opts).process
 
       if @options[:run_on_start]
@@ -53,7 +54,6 @@ module Guard
     # @raise [:task_has_failed] when stop has failed
     #
     def run_all
-      UI.info 'running all'
       @tracker.run_checks
       print_failed(@tracker.checks)
       throw :task_has_failed if @tracker.checks.all_warnings.any?
@@ -94,7 +94,7 @@ module Guard
       end
 
       info(message, 'yellow')
-      UI.info all_warnings.sort_by { |w| w.confidence }.join("\n")
+      warning_info(all_warnings.sort_by { |w| w.confidence })
     end
 
     def print_changed report
@@ -107,7 +107,7 @@ module Guard
       if fixed_warnings.any?
         results_notification = pluralize(fixed_warnings.length,  "fixed warning")
         info(results_notification, 'green')
-        info(fixed_warnings.sort_by { |w| w.confidence }.join("\n"))
+        warning_info(fixed_warnings.sort_by { |w| w.confidence })
 
         message << results_notification
         should_alert = true
@@ -118,7 +118,7 @@ module Guard
       if new_warnings.any?
         new_warning_message = pluralize(new_warnings.length,  "new warning")
         info(new_warning_message, 'red')
-        info(new_warnings.sort_by { |w| w.confidence }.join("\n"))
+        warning_info(new_warnings.sort_by { |w| w.confidence })
 
         message << new_warning_message
         should_alert = true
@@ -129,12 +129,11 @@ module Guard
       if existing_warnings.any?
         existing_warning_message = pluralize(existing_warnings.length, "previous warning")
         info(existing_warning_message, 'yellow')
-        info(existing_warnings.sort_by { |w| w.confidence }.join("\n"))
+        warning_info(existing_warnings.sort_by { |w| w.confidence })
 
         message << existing_warning_message
         should_alert = true if @options[:chatty]
         icon ||= :pending
-
       end
 
       if @options[:output_files]
@@ -164,13 +163,41 @@ module Guard
       end
     end
 
-    # stolen from rails
+    # stolen from ActiveSupport
     def pluralize(count, singular, plural = nil)
       "#{count || 0} " + ((count == 1 || count =~ /^1(\.0+)?$/) ? singular : (plural || singular.pluralize))
     end
 
     def info(message, color = :white)
       UI.info(UI.send(:color, message, color))
+    end
+
+    def warning_info(warnings, color = :white)
+      warnings.each do |warning|
+        info(decorate_warning(warning))
+      end
+    end
+
+    def decorate_warning(warning)
+      color = case warning.confidence
+      when 0
+        :red
+      when 1
+        :yellow
+      when 2
+        :white
+      end
+
+      output =  UI.send(:color, ::Brakeman::Warning::TEXT_CONFIDENCE[warning.confidence], color)
+      output << " - #{warning.warning_type} - #{warning.message}"
+      output << " near line #{warning.line}" if warning.line
+      if warning.file
+        # fix this ish or wait for brakeman to be fixed
+        filename = warning.file.gsub(@options[:app_path], '')
+        output << " in #{filename}"
+      end
+      output << ": #{warning.format_code}" if warning.code
+      output
     end
   end
 end
