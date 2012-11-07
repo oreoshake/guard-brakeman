@@ -10,7 +10,7 @@ end
 
 Then /^guard should rescan the application$/ do
   type "e" # exit
-  assert_partial_output "rescanning app/controllers/application_controller.rb, running all checks", all_output
+  assert_partial_output 'rescanning ["app/controllers/application_controller.rb"], running all checks', all_output
 end
 
 Then /^guard should scan the application$/ do
