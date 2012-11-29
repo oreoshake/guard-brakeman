@@ -78,7 +78,7 @@ module Guard
     def print_failed report
       UI.info "\n------ brakeman warnings --------\n"
 
-      icon = report.all_warnings.count > 0 ? :failed : :success
+      @icon = report.all_warnings.count > 0 ? :failed : :success
 
       all_warnings = report.all_warnings
 
@@ -90,7 +90,7 @@ module Guard
       end
 
       if @options[:chatty] && all_warnings.any?
-        ::Guard::Notifier.notify(message, :title => "Full Brakeman results", :image => icon)
+        ::Guard::Notifier.notify(message, :title => "Full Brakeman results", :image => @icon)
       end
 
       info(message, 'yellow')
@@ -101,57 +101,46 @@ module Guard
       UI.info "\n------ brakeman warnings --------\n"
 
       message = []
-      should_alert = false
+      @should_alert = false
 
-      fixed_warnings = report.fixed_warnings
-      if fixed_warnings.any?
-        results_notification = pluralize(fixed_warnings.length,  "fixed warning")
-        info(results_notification, 'green')
-        warning_info(fixed_warnings.sort_by { |w| w.confidence })
+      @fixed_warnings = report.fixed_warnings
+      message << growl_notification_message(@fixed_warnings, 'fixed warning', 'green', :failed, true)
 
-        message << results_notification
-        should_alert = true
-        icon = :success
-      end
+      @new_warnings = report.new_warnings
+      message << growl_notification_message(@new_warnings, 'new warning', 'red', :failed, true)
 
-      new_warnings = report.new_warnings
-      if new_warnings.any?
-        new_warning_message = pluralize(new_warnings.length,  "new warning")
-        info(new_warning_message, 'red')
-        warning_info(new_warnings.sort_by { |w| w.confidence })
-
-        message << new_warning_message
-        should_alert = true
-        icon = :failed
-      end
-
-      existing_warnings = report.existing_warnings
-      if existing_warnings.any?
-        existing_warning_message = pluralize(existing_warnings.length, "previous warning")
-        info(existing_warning_message, 'yellow')
-        warning_info(existing_warnings.sort_by { |w| w.confidence })
-
-        message << existing_warning_message
-        should_alert = true if @options[:chatty]
-        icon ||= :pending
-      end
+      @existing_warnings = report.existing_warnings
+      message << growl_notification_message(@existing_warnings, 'previous warning', 'yellow', :pending, true)
 
       if @options[:output_files]
         write_report
         message << "\nResults written to #{@options[:output_files]}"
       end
 
-      title = case icon
-      when :success
-        pluralize(fixed_warnings.length, "Warning") + " fixed."
-      when :pending
-        pluralize(existing_warnings.length, "Warning") + " left to fix."
-      when :failed
-        pluralize(new_warnings.length, "Warning") + " introduced."
-      end
+      title = title_for @icon
 
-      if @options[:notifications] && should_alert
-        ::Guard::Notifier.notify(message.join(", ").chomp, :title => title, :image => icon)
+      if @options[:notifications] && @should_alert
+        ::Guard::Notifier.notify(message.join(", ").chomp, :title => title, :image => @icon)
+      end
+    end
+
+    def growl_notification_message warnings, warning_message, color, icon, alert
+      results_notification = pluralize(warnings.length, warning_message)
+      info(results_notification, color)
+      warning_info(warnings.sort_by { |w| w.confidence })
+      @should_alert = alert
+      @icon ||= icon
+      results_notification || ''
+    end
+
+    def title_for icon
+      case icon
+      when :success
+        pluralize(@fixed_warnings.length, "Warning") + " fixed."
+      when :pending
+        pluralize(@existing_warnings.length, "Warning") + " left to fix."
+      when :failed
+        pluralize(@new_warnings.length, "Warning") + " introduced."
       end
     end
 
@@ -178,8 +167,8 @@ module Guard
       end
     end
 
-    def decorate_warning(warning)
-      color = case warning.confidence
+    def warning_color confidence
+      case confidence
       when 0
         :red
       when 1
@@ -187,15 +176,17 @@ module Guard
       when 2
         :white
       end
+    end
 
-      output =  UI.send(:color, ::Brakeman::Warning::TEXT_CONFIDENCE[warning.confidence], color)
+    def warning_text_confidence confidence
+      ::Brakeman::Warning::TEXT_CONFIDENCE[confidence]
+    end
+
+    def decorate_warning(warning)
+      output =  UI.send(:color, warning_text_confidence(warning.confidence), warning_confidence_color(warning.confidence))
       output << " - #{warning.warning_type} - #{warning.message}"
       output << " near line #{warning.line}" if warning.line
-      if warning.file
-        # fix this ish or wait for brakeman to be fixed
-        filename = warning.file.gsub(@options[:app_path], '')
-        output << " in #{filename}"
-      end
+      output << " in #{@options[:app_path]}" if warning.file
       output << ": #{warning.format_code}" if warning.code
       output
     end
