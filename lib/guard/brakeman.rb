@@ -41,7 +41,6 @@ module Guard
     def start
       @scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
       @options.merge!(@scanner_opts)
-      puts @scanner_opts.inspect
       @tracker = ::Brakeman::Scanner.new(@scanner_opts).process
 
       if @options[:run_on_start]
@@ -69,7 +68,7 @@ module Guard
     def run_on_changes paths
       return run_all unless @tracker.checks
 
-      UI.info "\n\nrescanning #{paths}, running all checks"
+      info "\n\nrescanning #{paths}, running all checks"
       report = ::Brakeman::rescan(@tracker, paths)
       print_changed(report)
       throw :task_has_failed if report.any_warnings?
@@ -78,7 +77,7 @@ module Guard
     private
 
     def print_failed report
-      UI.info "\n------ brakeman warnings --------\n"
+      info "\n------ brakeman warnings --------\n"
 
       icon = report.all_warnings.count > 0 ? :failed : :success
 
@@ -100,7 +99,7 @@ module Guard
     end
 
     def print_changed report
-      UI.info "\n------ brakeman warnings --------\n"
+      info "\n------ brakeman warnings --------\n"
 
       message = []
       should_alert = false
@@ -171,7 +170,7 @@ module Guard
     end
 
     def info(message, color = :white)
-      UI.info(UI.send(:color, message, color))
+      UI.info(UI.send(:color, message, color)) unless @options[:quiet]
     end
 
     def warning_info(warnings, color = :white)
