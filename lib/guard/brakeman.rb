@@ -29,8 +29,9 @@ module Guard
         :notifications => true,
         :run_on_start => false,
         :chatty => false,
-        :min_confidence => 1
-      }.update(options)
+        :min_confidence => 1,
+        :quiet => true
+      }.merge!(options)
     end
 
     # Gets called once when Guard starts.
@@ -40,6 +41,7 @@ module Guard
     def start
       @scanner_opts = ::Brakeman::set_options({:app_path => '.'}.merge(@options))
       @options.merge!(@scanner_opts)
+      puts @scanner_opts.inspect
       @tracker = ::Brakeman::Scanner.new(@scanner_opts).process
 
       if @options[:run_on_start]
