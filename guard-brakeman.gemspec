@@ -3,12 +3,12 @@ $:.push File.expand_path('../lib', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'guard-brakeman'
-  s.version     = '0.6.0'
+  s.version     = '0.6.2'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Neil Matatall', 'Justin Collins']
-  s.homepage    = 'http://rubygems.org/gems/guard-brakeman'
+  s.homepage    = 'https://github.com/guard/guard-brakeman'
   s.summary     = 'Guard gem for Brakeman'
-  s.description = 'Guard::Brakeman automatically scans your Rails app for vulnerabilities'
+  s.description = 'Guard::Brakeman automatically scans your Rails app for vulnerabilities using the Brakeman Scaner https://github.com/presidentbeef/brakeman'
 
   s.rubyforge_project         = 'guard-brakeman'
 

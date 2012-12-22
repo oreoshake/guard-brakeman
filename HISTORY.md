@@ -1,3 +1,6 @@
+# 0.6.1
+- Allow the ability to hide all output when running guard
+
 # 0.5.1
 - Cleanup the output and clean up some code
 
