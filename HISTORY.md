@@ -1,3 +1,6 @@
+# 0.6.2
+- Just some cleanup of the project
+
 # 0.6.1
 - Allow the ability to hide all output when running guard
 
