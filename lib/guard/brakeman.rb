@@ -30,7 +30,7 @@ module Guard
         :run_on_start => false,
         :chatty => false,
         :min_confidence => 1,
-        :quiet => true
+        :quiet => false
       }.merge!(options)
     end
 
