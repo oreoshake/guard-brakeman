@@ -1,7 +1,3 @@
-# 0.7.0
-
-Bug fixes, doc updates, https, and .gitignore
-
 # 0.6.2
 - Just some cleanup of the project
 
