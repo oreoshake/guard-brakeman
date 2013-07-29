@@ -1,3 +1,7 @@
+# 0.7.1
+
+"quiet" option only sets brakeman -q flag, it doesn't suppress messages from guard-brakeman anymore.
+
 # 0.7.0
 
 Bug fixes, doc updates, https, and .gitignore

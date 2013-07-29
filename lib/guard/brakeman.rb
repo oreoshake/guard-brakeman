@@ -174,7 +174,7 @@ module Guard
     end
 
     def info(message, color = :white)
-      UI.info(UI.send(:color, message, color)) unless @options[:quiet]
+      UI.info(UI.send(:color, message, color))
     end
 
     def warning_info(warnings, color = :white)
