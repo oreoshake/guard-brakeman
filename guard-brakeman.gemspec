@@ -4,6 +4,7 @@ Gem::Specification.new do |s|
   s.name        = 'guard-brakeman'
   s.version     = '0.7.1'
   s.platform    = Gem::Platform::RUBY
+  s.license     = 'MIT'
   s.authors     = ['Neil Matatall', 'Justin Collins']
   s.homepage    = 'https://github.com/guard/guard-brakeman'
   s.summary     = 'Guard gem for Brakeman'
