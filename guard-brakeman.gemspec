@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'guard-brakeman'
-  s.version     = '0.7.1'
+  s.version     = '0.8.0'
   s.platform    = Gem::Platform::RUBY
   s.license     = 'MIT'
   s.authors     = ['Neil Matatall', 'Justin Collins']
