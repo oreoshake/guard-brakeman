@@ -1,5 +1,6 @@
 require 'guard'
-require 'guard/guard'
+require 'guard/plugin'
+
 require 'brakeman'
 require 'brakeman/scanner'
 
@@ -8,8 +9,8 @@ module Guard
   # The Brakeman guard that gets notifications about the following
   # Guard events: `start`, `stop`, `reload`, `run_all` and `run_on_changes`.
   #
-  class Brakeman < Guard
-    def initialize(watchers = [], options = { })
+  class Brakeman < Plugin
+    def initialize(options = { })
       super
 
       ::Brakeman.instance_variable_set(:@quiet, options[:quiet])
