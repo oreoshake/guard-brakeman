@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+require 'guard/brakeman'
+
 # TODO
 # Barely covers happy case, ignores sad case
 # Pending tests
