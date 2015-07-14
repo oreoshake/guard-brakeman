@@ -38,7 +38,7 @@ Please read the [Guard usage documentation](https://github.com/guard/guard#readm
 Guard::Brakeman can be adapted to all kind of projects and comes with a default template that looks like this:
 
 ```ruby
-guard 'brakeman' do
+guard :brakeman, run_on_start: true do
   watch(%r{^app/.+\.(erb|haml|rhtml|rb)$})
   watch(%r{^config/.+\.rb$})
   watch(%r{^lib/.+\.rb$})
